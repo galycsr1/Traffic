@@ -1,0 +1,44 @@
+
+
+.Videos {    
+    width: 40vw;
+    height: 30vw;
+    position: relative;
+    margin: 1vw;
+}
+
+.Videos, .Video {
+    display: inline-block;
+}
+
+.Video:nth-child(1) {
+    top: 0;
+    left: 0;
+}
+.Video:nth-child(2) {
+    top: 0;
+    right: 0;
+}
+.Video:nth-child(3) {
+    bottom: 0;
+    left: 0;
+}
+.Video:nth-child(4) {
+    bottom: 0;
+    right: 0;
+}
+
+.Video {
+    border: solid 0.1vw #222;
+    position: absolute;
+    width: 19.9vw;
+    height: 14.9vw;    
+    margin: 0;
+}
+.Video p {
+    text-align: center;
+    vertical-align: middle;
+    height: 14.9vw;
+    line-height: 14.9vw;
+    margin: 0;
+}
