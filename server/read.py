@@ -1,6 +1,6 @@
 import os
 import json
-
+#ח
 metadata = open('big_22.12.2017-10_28_44.meta','r')
 i = 0
 frame = metadata.readline()[:-1].replace("'", '"').replace("False", "false").replace("True", "true")
