@@ -52,20 +52,24 @@ class Controls extends Component {
                 <ModalBody>
                     <Form>
                         <FormGroup>
+                            <Label>Frames JSON</Label>
+                            <Input type="file" accept="*.json" onChange={(event)=> { this.props.readFramesFile(event) }} />
+                        </FormGroup>
+                        <FormGroup>
                             <Label>Video file #1</Label>
-                            <Input type="file" accept="video/*" onChange={(event)=> { this.props.readFile(0, event) }} />
+                            <Input type="file" accept="video/*" onChange={(event)=> { this.props.readVideoFile(0, event) }} />
                         </FormGroup>
                         <FormGroup>
                             <Label>Video file #2</Label>
-                            <Input type="file" accept="video/*" onChange={(event)=> { this.props.readFile(1, event) }} />
+                            <Input type="file" accept="video/*" onChange={(event)=> { this.props.readVideoFile(1, event) }} />
                         </FormGroup>
                         <FormGroup>
                             <Label>Video file #3</Label>
-                            <Input type="file" accept="video/*" onChange={(event)=> { this.props.readFile(2, event) }} />
+                            <Input type="file" accept="video/*" onChange={(event)=> { this.props.readVideoFile(2, event) }} />
                         </FormGroup>
                         <FormGroup>
                             <Label>Video file #4</Label>
-                            <Input type="file" accept="video/*" onChange={(event)=> { this.props.readFile(3, event) }} />
+                            <Input type="file" accept="video/*" onChange={(event)=> { this.props.readVideoFile(3, event) }} />
                         </FormGroup>
                     </Form>
                 </ModalBody>
