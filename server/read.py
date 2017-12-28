@@ -3,8 +3,7 @@ import json
 
 
 def ReadMetaFile(name):
-    #metadata = open('metas/' + name, 'r+')
-    metadata = open(name, 'r+')
+    metadata = open('metas/' + name, 'r+')
     i = 0
     frame = metadata.readline()[:-1].replace("'", '"').replace("False", "false").replace("True", "true")
     while frame:
@@ -12,8 +11,8 @@ def ReadMetaFile(name):
             os.makedirs('frames/' + name[:-5])
         file = open('frames/' + name[:-5] + '/f' + str(i) + '.json', 'w')
         #edit the line (json) before writing it
-        for objc in frame['objects']:
-            print(objc['type'])
+        #for objc in frame['objects']:
+        #    print(objc['type'])
 
         file.write(frame)
         frame = metadata.readline()[:-1].replace("'", '"').replace("False", "false").replace("True", "true")
