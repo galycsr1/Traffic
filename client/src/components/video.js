@@ -25,10 +25,12 @@ class Video extends Component {
                         ref="player"
                         width='100%'
                         height='100%'
+                        loop={false}
                         url={this.props.url}
                         playing={this.props.playing}
                         playbackRate={this.props.playbackRate}
-                        onProgress={this.props.onProgress} 
+                        onProgress={this.props.onProgress}                         
+                        onEnded={this.props.onEnded}   
                         />
                 </div>
             );

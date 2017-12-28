@@ -1,17 +1,30 @@
 import React, { Component } from 'react';
-import Car from './car.js';
+import Vehicle from './vehicle.js';
 import '../styles/Map.css';
 
 class Map extends Component {
   render() {
-    var cars = this.props.cars.map(function(car) {
-        return (
-            <Car key={car.key} x={car.x} y={car.y}></Car>
-        );
-    });
+    var vehicles = '';
+    if(this.props.frame != null) {
+      try {
+        vehicles = this.props.frame.map(function(vehicle) {
+          return (
+              <Vehicle key={vehicle.key} 
+                       x={vehicle.x} 
+                       y={vehicle.y} 
+                       direction={vehicle.direction} 
+                       type={vehicle.type}>
+              </Vehicle>
+          );
+        });
+      }
+      catch(e) {
+        console.log(e);
+      }
+    } 
     return (
       <div className="Map">
-        {cars}
+        {vehicles}
       </div>
     );
   }

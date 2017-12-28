@@ -1,45 +1,18 @@
 .Map {
-    width: 30vw;
-    height: 30vw;
-    border: solid 0.1vw #222;
+    width: 500px;
+    height: 500px;
+    border: solid 1px #222;
     display: inline-block;
-    margin: 1vw;
-    background-color: #dcdcdc;
+    margin: 10px;
     position: relative;
+    vertical-align: top;
+    overflow: hidden;
 }
 
-.lane {
-    background-color: #333;
-    width: 8vw;
-    height: 18vw;
+.vehicle {
+    width: 40px;
+    height: 40px;
     position: absolute;
-}
-
-.lane:nth-child(1) {
-    transform: rotate(90deg);    
-    top: 6vw;
-    left: 4.9vw;
-}
-
-.lane:nth-child(2) {  
-    top: 0;
-    left: 11vw;
-}
-
-.lane:nth-child(3) {
-    transform: rotate(90deg);    
-    top: 6vw;
-    right: 4.9vw;
-}
-
-.lane:nth-child(4) {  
-    bottom: 0vw;
-    left: 11vw;
-}
-
-.car {
-    width: 1vw;
-    height: 2vw;
-    position: absolute;
-    background-color: red;
+    background-size: 100%;
+    background-repeat: no-repeat;
 }
