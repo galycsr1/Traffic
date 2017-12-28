@@ -35,7 +35,6 @@ class App extends Component {
             currentFrame: self.state.currentFrame + 1
           });
           timeout = FRAME_TIME / self.state.playbackRate;
-          console.log(timeout);
           setTimeout(playFrame, timeout * 1000);
         }
       }
@@ -88,22 +87,29 @@ class App extends Component {
     let self = this;
     reader.onload = function(){
       const text = reader.result;
-      self.setState({
+      /*self.setState({
         frames: JSON.parse(text),
         currentFrame: 0
-      });
-      /*axios.get('132.73.198.188:8080/getFrames', {
-        json: text
+      });*/
+      axios.post('http://localhost:8080/', {
+        route: 'getFrames',
+        input: text
       })
       .then(function (response) {
-        self.setState({
-          frames: JSON.parse(response),
-          currentFrame: 0
-        });
+        console.log(response);
+        try {
+          self.setState({
+            frames: JSON.parse(response.data),
+            currentFrame: 0
+          });
+        }
+        catch(e) {
+          console.log(e);
+        }
       })
       .catch(function (error) {
         console.log(error);
-      });*/
+      });
     };
     reader.readAsText(file);
   }
