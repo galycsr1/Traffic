@@ -1,0 +1,1 @@
+{"objects": [{"confidence": 0.78, "type": "car", "static": true, "created_at": "2017-12-28 04:55:41.927352", "times_lost_by_convnet": 2, "speed": 3.930568065066332, "lost": false, "alert_tags": [], "tracking_id": 24491, "bounding_box": [529, 314, 66, 64], "new": false, "counted": false}], "frame_index": 5445076}
