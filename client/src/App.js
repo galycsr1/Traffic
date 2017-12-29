@@ -98,10 +98,10 @@ class App extends Component {
       .then(function (response) {
         console.log(response);
         try {
-          self.setState({
+          /*self.setState({
             frames: JSON.parse(response.data),
             currentFrame: 0
-          });
+          });*/
         }
         catch(e) {
           console.log(e);
