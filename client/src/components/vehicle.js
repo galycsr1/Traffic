@@ -14,9 +14,9 @@ class Vehicle extends Component {
         width: this.getVehicleDimensions(this.props.type).width + 'px',
         height: this.getVehicleDimensions(this.props.type).height + 'px'
     }
-
+	
     return (
-      <div className="vehicle" style={style}>        
+      <div className="vehicle" style={style} >        
       </div>
     );
   }
