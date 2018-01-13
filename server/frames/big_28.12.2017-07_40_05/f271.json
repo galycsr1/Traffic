@@ -1,1 +1,0 @@
-{"objects": [{"confidence": 0.56, "type": "bus", "static": true, "created_at": "2017-12-28 07:39:00.933165", "times_lost_by_convnet": 0, "speed": 15.810779265802456, "lost": false, "alert_tags": [], "tracking_id": 26598, "bounding_box": [523, 232, 92, 131], "new": false, "counted": false}], "frame_index": 6350537}
