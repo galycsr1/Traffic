@@ -4,24 +4,31 @@ import '../styles/Map.css';
 
 class Map extends Component {
   render() {
-    var vehicles = '';
-    if(this.props.frame != null) {
-      try {
-        vehicles = this.props.frame.map(function(vehicle) {
-          return (
-              <Vehicle key={vehicle.key} 
-                       x={vehicle.x} 
-                       y={vehicle.y} 
-                       direction={vehicle.direction} 
-                       type={vehicle.type}>
-              </Vehicle>
-          );
-        });
-      }
-      catch(e) {
-        console.log(e);
-      }
-    } 
+    let vehicles = [];
+    try {
+      if(this.props.currentFrame != null) {
+        let self = this;
+        this.props.frames.map(function(directionFrames) {
+          if(directionFrames != null) {
+            let _vehicles = directionFrames[self.props.currentFrame].map(function(vehicle) {
+              return (
+                  <Vehicle key={vehicle.key} 
+                           x={vehicle.x} 
+                           y={vehicle.y} 
+                           direction={vehicle.direction} 
+                           type={vehicle.type}>
+                  </Vehicle>
+              );
+            });
+            vehicles = vehicles.concat(_vehicles);
+          }
+          return null;
+        });  
+      }       
+    }
+    catch(e) {
+      console.log(e);
+    }   
     return (
       <div className="Map">
         {vehicles}

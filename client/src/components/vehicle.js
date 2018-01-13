@@ -16,7 +16,7 @@ class Vehicle extends Component {
     }
 
     return (
-      <div className="vehicle" style={style}>         
+      <div className="vehicle" style={style}>        
       </div>
     );
   }

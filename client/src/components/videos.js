@@ -19,25 +19,29 @@ class Videos extends Component {
                   playing={this.props.playing} 
                   playbackRate={this.props.playbackRate} 
                   onEnded={this.props.onEnded}
-                  url={this.props.urls[0]}>          
+                  url={this.props.urls[0]}
+                  onProgress={this.props.onProgress}>          
         </Video>
         <Video ref="video1"
                   playing={this.props.playing} 
                   playbackRate={this.props.playbackRate} 
                   onEnded={this.props.onEnded}
-                  url={this.props.urls[1]}>          
+                  url={this.props.urls[1]}
+                  onProgress={this.props.onProgress}>          
         </Video>
         <Video ref="video2"
                   playing={this.props.playing} 
                   playbackRate={this.props.playbackRate} 
                   onEnded={this.props.onEnded}
-                  url={this.props.urls[2]}>          
+                  url={this.props.urls[2]}
+                  onProgress={this.props.onProgress}>          
         </Video>
         <Video ref="video3"
                   playing={this.props.playing} 
                   playbackRate={this.props.playbackRate} 
                   onEnded={this.props.onEnded}
-                  url={this.props.urls[3]}>          
+                  url={this.props.urls[3]}
+                  onProgress={this.props.onProgress}>          
         </Video>
       </div>
     );

@@ -35,19 +35,12 @@ def get_array(param):
 
 
 def clean_routs(hash_vehicles):
-    # hash_vehicles.popitem()
-    # hash_vehicles.popitem()
-    # hash_vehicles.popitem()
-    # array = get_array(hash_vehicles.popitem())
-    # x = array[0]
-    # y = array[1]
-    # print (len(x))
-    # for i in range (0,len(x)):
-    #     # print ("x: ",end = "")
-    #     # print (x[i],)
-    #     # print("y: ",end = "")
-    #     # print (y[i],)
-    return hash_vehicles
+#      array = get_array(hash_vehicles.popitem())
+#      x = array[0]
+#      y = array[1]
+#      for i in range (0,len(x)):
+#          print(len(x))
+     return hash_vehicles
 
 
 def clean_routs_jesons(hash_vehicles, jsons):

@@ -15,6 +15,7 @@ class Controls extends Component {
         });
     }
     render() {
+        console.log(this.props.played);
         return (
           <div className="Controls">
             <Form>
@@ -51,23 +52,35 @@ class Controls extends Component {
                 <ModalHeader toggle={this.toggleFileModal}>Select Files</ModalHeader>
                 <ModalBody>
                     <Form>
-                        <FormGroup>
-                            <Label>Frames JSON</Label>
-                            <Input type="file" accept="*.json" onChange={(event)=> { this.props.readFramesFile(event) }} />
+                        <FormGroup className="inputRow">
+                            <Label>Frames JSON #1</Label>
+                            <Input type="file" accept="*.meta" onChange={(event)=> { this.props.readFramesFile(0, event) }} />
                         </FormGroup>
-                        <FormGroup>
+                        <FormGroup className="inputRow">
                             <Label>Video file #1</Label>
                             <Input type="file" accept="video/*" onChange={(event)=> { this.props.readVideoFile(0, event) }} />
                         </FormGroup>
-                        <FormGroup>
+                        <FormGroup className="inputRow">
+                            <Label>Frames JSON #2</Label>
+                            <Input type="file" accept="*.meta" onChange={(event)=> { this.props.readFramesFile(1, event) }} />
+                        </FormGroup>
+                        <FormGroup className="inputRow">
                             <Label>Video file #2</Label>
                             <Input type="file" accept="video/*" onChange={(event)=> { this.props.readVideoFile(1, event) }} />
                         </FormGroup>
-                        <FormGroup>
+                        <FormGroup className="inputRow">
+                            <Label>Frames JSON #3</Label>
+                            <Input type="file" accept="*.meta" onChange={(event)=> { this.props.readFramesFile(2, event) }} />
+                        </FormGroup>
+                        <FormGroup className="inputRow">
                             <Label>Video file #3</Label>
                             <Input type="file" accept="video/*" onChange={(event)=> { this.props.readVideoFile(2, event) }} />
                         </FormGroup>
-                        <FormGroup>
+                        <FormGroup className="inputRow">
+                            <Label>Frames JSON #4</Label>
+                            <Input type="file" accept="*.meta" onChange={(event)=> { this.props.readFramesFile(3, event) }} />
+                        </FormGroup>
+                        <FormGroup className="inputRow">
                             <Label>Video file #4</Label>
                             <Input type="file" accept="video/*" onChange={(event)=> { this.props.readVideoFile(3, event) }} />
                         </FormGroup>
