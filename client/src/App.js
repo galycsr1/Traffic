@@ -107,7 +107,7 @@ class App extends Component {
         //console.log(response);
         try {
           let _frames = self.state.frames;
-          _frames[i] = self.parseFrames(response.data, (i + 1) * 90);
+          _frames[i] = self.parseFrames(response.data, (i + 1) * 270);
           self.setState({
             frames: _frames,
             currentFrame: 0,
