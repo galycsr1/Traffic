@@ -57,5 +57,29 @@ def clean(data):
             hash_vehicles[vehicle_id].append(coordinates)
             # if (vehicle_id ==24488):
             #     print (hash_vehicles[vehicle_id])
-    hash_vehicles = clean_routs(hash_vehicles)
-    return jsons
+    #hash_vehicles = clean_routs(hash_vehicles)
+    normalizeData(hash_vehicles)
+    return jsons, hash_vehicles
+
+def normalizeData(vehiclesPath):
+    for path in vehiclesPath:
+        start_location = vehiclesPath[path][0]
+        end_location = vehiclesPath[path][len(vehiclesPath[path])-1]
+        # We'll check that every location is in the range in x axis and in y axis
+        # between the start and end location and delete location that doesn't satisfies that
+        vehiclesPath[path] = [location for location in vehiclesPath[path] if checkInRange(start_location[0], end_location[0], location[0])]
+        vehiclesPath[path] = [location for location in vehiclesPath[path] if checkInRange(start_location[1], end_location[1], location[1])]
+
+        #for location in path:
+            #x_loc = location[0]
+            #y_loc = location[1]
+            #if not (start_location[0] <= x_loc <= end_location[0] or end_location[0] <= x_loc <= start_location[0])
+            #somelist = [x for x in somelist if not determine(x)]
+
+def checkInRange(start, end, currenLocation):
+    # check x/y axis
+    ans = True
+    if not (start <= currenLocation <= end or end <= currenLocation <= start):
+        # anaomality detected
+        ans = False
+    return ans
