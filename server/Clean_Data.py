@@ -68,22 +68,47 @@ def normalizeData(vehiclesPath):
 
         # First Stage:
         #   We'll check that every location is in the range in x axis and in y axis
-        #   between the start and end location and delete location that doesn't satisfies that
-        vehiclesPath[path] = [location for location in vehiclesPath[path] if checkInRange(start_location[0], end_location[0], location[0])]
-        vehiclesPath[path] = [location for location in vehiclesPath[path] if checkInRange(start_location[1], end_location[1], location[1])]
+        #   between the start and end location and change locations that doesn't satisfies that
+
+        """ instead of delete change it to a logical location
+        ####vehiclesPath[path] = [location for location in vehiclesPath[path] if checkInRange(start_location[0], end_location[0], location[0])]
+        ####vehiclesPath[path] = [location for location in vehiclesPath[path] if checkInRange(start_location[1], end_location[1], location[1])]"""
+
+        # Change the "bad" locations to the bounder's max value if bigger or to min value if smaller
+        # Do it whether in x/y axis or in both axes
+        for location in vehiclesPath[path]:
+            location[0] = checkInRangeAndFit(start_location[0], end_location[0], location[0])
+            location[1] = checkInRangeAndFit(start_location[1], end_location[1], location[1])
 
         # Second Stage:
         #   We'll check(and fix if needed) that the vehicle movement is linear. Which means that if in x/y axis we start
         #   in high number and end in lower number, the numbers should be going down all the way or vice versa.
         linearMovement(start_location, vehiclesPath[path])
 
-def checkInRange(start, end, currenLocation):
+"""def checkInRange(start, end, currenLocation):
     # check x/y axis
     ans = True
     if not (start <= currenLocation <= end or end <= currenLocation <= start):
         # anomaly detected
         ans = False
-    return ans
+    return ans"""
+
+def checkInRangeAndFit(start, end, currentLocation):
+    # check x/y axis
+    newLocation = currentLocation
+    if not (start <= currentLocation <= end or end <= currentLocation <= start):
+        # anomaly detected
+        if currentLocation > start:
+            if end > start:
+                newLocation = end
+            else:
+                newLocation = start
+        else:
+            if end > start:
+                newLocation = start
+            else:
+                newLocation = end
+    return newLocation
 
 def linearMovement(start, path):
     index = 1
@@ -97,11 +122,15 @@ def linearMovement(start, path):
                 directionX = checkForDirection(path[index], path[index+1], 0)
             if directionY == "unknown":
                 directionY = checkForDirection(path[index], path[index + 1], 1)
-            # if isOK = True, move to the next index else delete the location in index+1
+            # if isOK = True, move to the next index else 'fix' the location in index+1
             isOkX = checkIfLinear(path[index], path[index+1], directionX, 0)
+            if not isOkX:
+                path[index + 1][0] =  path[index][0]
             isOkY = checkIfLinear(path[index], path[index+1], directionY, 1)
-            if not isOkX or not isOkY:
-                del(path[index+1])
+            if not isOkY:
+                path[index + 1][1] =  path[index][1]
+            #if not isOkX or not isOkY:
+            #    del(path[index+1])
             else:
                 index += 1
         else:
