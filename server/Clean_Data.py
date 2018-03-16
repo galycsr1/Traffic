@@ -40,12 +40,14 @@ def clean(data):
     jsons = data.replace("'", '"').replace("False", "false").replace("True", "true").split("\n")
     ans = []
     hash_vehicles = {}
+    # Extract path for each vehicle by collecting location per frame from the current JSON file
     for frame in jsons:
         try:
             json_frame = json.loads(frame)
         except ValueError:  # includes simplejson.decoder.JSONDecodeError
             pass
         objects = json_frame['objects']
+        # Extract location of each vehicle in the current frame
         for i in range(0, len(objects)):
             vehicle = objects[i]
             vehicle_id = int(vehicle['tracking_id'])
@@ -58,8 +60,25 @@ def clean(data):
 
     #hash_vehicles = clean_routs(hash_vehicles)
     normalizeData(hash_vehicles)
-    return jsons, hash_vehicles
+    updateJson(jsons, hash_vehicles)
+    return jsons
 
+def updateJson(jsonFile, vehiclesPath):
+    # Pass through all the frames in order to update them
+    for frame in jsonFile:
+        try:
+            jsonFrame = json.loads(frame)
+        except ValueError:  # includes simplejson.decoder.JSONDecodeError
+            pass
+        objects = jsonFrame['objects']
+        # Update location of each vehicle in the current frame
+        for i in range(0, len(objects)):
+            vehicle = objects[i]
+            vehicle_id = int(vehicle['tracking_id'])
+            currentVehiclePath = vehiclesPath[vehicle_id]
+            modifiedLocation = currentVehiclePath.pop(0)
+            vehicle['bounding_box'][0] = modifiedLocation[0]
+            vehicle['bounding_box'][1] = modifiedLocation[1]
 
 def normalizeData(vehiclesPath):
     for path in vehiclesPath:
@@ -68,14 +87,9 @@ def normalizeData(vehiclesPath):
 
         # First Stage:
         #   We'll check that every location is in the range in x axis and in y axis
-        #   between the start and end location and change locations that doesn't satisfies that
-
-        """ instead of delete change it to a logical location
-        ####vehiclesPath[path] = [location for location in vehiclesPath[path] if checkInRange(start_location[0], end_location[0], location[0])]
-        ####vehiclesPath[path] = [location for location in vehiclesPath[path] if checkInRange(start_location[1], end_location[1], location[1])]"""
-
-        # Change the "bad" locations to the bounder's max value if bigger or to min value if smaller
-        # Do it whether in x/y axis or in both axes
+        #   between the start and end location and then change locations that doesn't satisfies that
+        #   We'll change these locations to the boundaries. Which means: to max value if bigger or to
+        #   min value if smaller. Do it whether in x/y axis or in both axes
         for location in vehiclesPath[path]:
             location[0] = checkInRangeAndFit(start_location[0], end_location[0], location[0])
             location[1] = checkInRangeAndFit(start_location[1], end_location[1], location[1])
@@ -84,14 +98,6 @@ def normalizeData(vehiclesPath):
         #   We'll check(and fix if needed) that the vehicle movement is linear. Which means that if in x/y axis we start
         #   in high number and end in lower number, the numbers should be going down all the way or vice versa.
         linearMovement(start_location, vehiclesPath[path])
-
-"""def checkInRange(start, end, currenLocation):
-    # check x/y axis
-    ans = True
-    if not (start <= currenLocation <= end or end <= currenLocation <= start):
-        # anomaly detected
-        ans = False
-    return ans"""
 
 def checkInRangeAndFit(start, end, currentLocation):
     # check x/y axis
@@ -116,7 +122,7 @@ def linearMovement(start, path):
     directionX = checkForDirection(start, path[index], 0)
     directionY = checkForDirection(start, path[index], 1)
     while index < len(path):
-        # if not the last location in path
+        # if not the last location in path (maybe redundant)
         if index != len(path) - 1:
             if directionX == "unknown":
                 directionX = checkForDirection(path[index], path[index+1], 0)
@@ -129,8 +135,6 @@ def linearMovement(start, path):
             isOkY = checkIfLinear(path[index], path[index+1], directionY, 1)
             if not isOkY:
                 path[index + 1][1] =  path[index][1]
-            #if not isOkX or not isOkY:
-            #    del(path[index+1])
             else:
                 index += 1
         else:

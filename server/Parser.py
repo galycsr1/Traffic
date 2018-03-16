@@ -5,11 +5,7 @@ import server.Knowledge_Base
 
 
 def fix_file(data,info_name):
-    jsons, vehiclesPath = server.Clean_Data.clean(data)
-    #lst = json.loads(jsons[0])
-    #id = lst['objects'][0]['tracking_id']
-    #print(id)
-    #print(vehiclesPath[24547])
+    jsons = server.Clean_Data.clean(data)
     info = json.load(open(info_name, 'r'))
     ans = []
     for frame in jsons:
