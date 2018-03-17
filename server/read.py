@@ -1,8 +1,8 @@
 import os
 import json
 
-import Calibration
-import Parser
+import server.Calibration
+import server.Parser
 
 '''def read_meta_file(name):
     metadata = open('metas/' + name, 'r')
@@ -24,8 +24,8 @@ import Parser
 
 
 def read_meta_file():
-    file = open("C:\\Users\\Avner\\PycharmProjects\\traffic data\\examples\\big_28.12.2017-04_55_56.meta", 'r')
-    return Parser.fix_file(file.read())
+    file = open("D:\\Idan\\Traffic-examples\\big_28.12.2017-04_55_56.meta", 'r')
+    return server.Parser.fix_file(file.read())
 
 
 
