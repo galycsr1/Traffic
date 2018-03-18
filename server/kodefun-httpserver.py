@@ -3,12 +3,10 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 from io import BytesIO
-
-import Parser
 import read
 
 def getFrames(text_http):
-    return Parser.fix_file(text_http,"C:\\Users\\Avner\\PycharmProjects\\traffic data\\examples\\big_28.12.2017-05_05_06.json")
+    return read.fixFile(text_http)
 
 #Create custom HTTPRequestHandler class
 class KodeFunHTTPRequestHandler(BaseHTTPRequestHandler):

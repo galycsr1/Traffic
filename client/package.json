@@ -9,6 +9,7 @@
     "react-dom": "^16.2.0",
     "react-modal": "^3.1.10",
     "react-player": "^0.25.3",
+    "react-player-controls": "^0.5.18",
     "react-scripts": "^1.0.17",
     "reactstrap": "^5.0.0-alpha.4",
     "screenfull": "^3.3.2"
@@ -18,5 +19,12 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "css-loader": "^0.28.10",
+    "node-sass": "^4.7.2",
+    "sass-loader": "^6.0.7",
+    "style-loader": "^0.20.2",
+    "webpack": "^3.11.0"
   }
 }

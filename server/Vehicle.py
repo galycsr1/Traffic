@@ -1,6 +1,7 @@
 class Vehicle:
 
-    def __init__(self, tracking_id, x, y):
+    def __init__(self, tracking_id, type, bbox, speed):
         self.tracking_id = tracking_id
-        self.x = x
-        self.y = y
+        self.type = type
+        self.speed = speed
+        self.bbox = bbox

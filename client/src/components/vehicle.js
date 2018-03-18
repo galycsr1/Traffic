@@ -7,16 +7,16 @@ class Vehicle extends Component {
     
   render() {
     var style = {
-        top: this.props.y + 'px',
-        left: this.props.x + 'px',
-        transform: 'rotate(' + this.props.direction + 'deg)',
+        top: (this.props.y - this.getVehicleDimensions(this.props.type).height / 2) + 'px',
+        left: (this.props.x - this.getVehicleDimensions(this.props.type).width / 2) + 'px',
+        transform: 'rotate(' + (this.props.direction * 90 + 180) + 'deg)',
         backgroundImage: `url(${this.getVehicleImage(this.props.type)})`,
         width: this.getVehicleDimensions(this.props.type).width + 'px',
         height: this.getVehicleDimensions(this.props.type).height + 'px'
     }
-	
+
     return (
-      <div className="vehicle" style={style} >        
+      <div className="vehicle" style={style}>        
       </div>
     );
   }

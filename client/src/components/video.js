@@ -14,7 +14,7 @@ class Video extends Component {
         if(this.props.url == null) {
             return (
                 <div className="Video">
-                    <p>No Video Selected</p>                    
+                    <p></p>  
                 </div>
             );
         }
@@ -22,6 +22,7 @@ class Video extends Component {
             return (
                 <div className="Video">
                     <ReactPlayer
+                        className="video-player"
                         ref="player"
                         width='100%'
                         height='100%'
@@ -32,6 +33,7 @@ class Video extends Component {
                         onProgress={this.props.onProgress}                         
                         onEnded={this.props.onEnded}   
                         />
+                    <p></p>
                 </div>
             );
         }
