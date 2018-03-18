@@ -1,19 +1,19 @@
 import json
-import Calibration
-import Clean_Data
-import Knowledge_Base
+import server.Calibration
+import server.Clean_Data
+import server.Knowledge_Base
 
 
 def fix_file(data,info_name):
-    jsons = Clean_Data.clean(data)
+    jsons = server.Clean_Data.clean(data)
     info = json.load(open(info_name, 'r'))
     ans = []
     for frame in jsons:
         if frame:
             frame = strip_json(frame)
-            frame = Calibration.fix_frame(frame, info['tracking_params']['lanes'])
+            frame = server.Calibration.fix_frame(frame, info['tracking_params']['lanes'])
             ans.append(frame)
-    Knowledge_Base.store(ans)
+        server.Knowledge_Base.store(ans)
     return ans
 
 def strip_json(json_file):
