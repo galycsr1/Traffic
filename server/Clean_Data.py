@@ -40,6 +40,7 @@ def clean(data):
     jsons = data.replace("'", '"').replace("False", "false").replace("True", "true").split("\n")
     ans = []
     hash_vehicles = {}
+    vehiclesSpeed = {}
     # Extract path for each vehicle by collecting location per frame from the current JSON file
     for frame in jsons:
         try:
@@ -54,12 +55,15 @@ def clean(data):
             coordinates = [[], []]
             if not hash_vehicles.__contains__(vehicle_id):
                 hash_vehicles[vehicle_id] = list()
+            if not vehiclesSpeed.__contains__(vehicle_id):
+                vehiclesSpeed[vehicle_id] = list()
             coordinates[0] = vehicle['bounding_box'][0]
             coordinates[1] = vehicle['bounding_box'][1]
             hash_vehicles[vehicle_id].append(coordinates)
+            vehiclesSpeed[vehicle_id].append(vehicle['speed'])
 
     #hash_vehicles = clean_routs(hash_vehicles)
-    normalizeData(hash_vehicles)
+    normalizeData(hash_vehicles, vehiclesSpeed)
     updateJson(jsons, hash_vehicles)
     return jsons
 
@@ -80,7 +84,8 @@ def updateJson(jsonFile, vehiclesPath):
             vehicle['bounding_box'][0] = modifiedLocation[0]
             vehicle['bounding_box'][1] = modifiedLocation[1]
 
-def normalizeData(vehiclesPath):
+def normalizeData(vehiclesPath, vehiclesSpeed):
+    # Fix and handle locations of vehicles from given data
     for path in vehiclesPath:
         start_location = vehiclesPath[path][0]
         end_location = vehiclesPath[path][len(vehiclesPath[path])-1]
@@ -98,6 +103,10 @@ def normalizeData(vehiclesPath):
         #   We'll check(and fix if needed) that the vehicle movement is linear. Which means that if in x/y axis we start
         #   in high number and end in lower number, the numbers should be going down all the way or vice versa.
         linearMovement(start_location, vehiclesPath[path])
+
+    # Third Stage:
+    #   We'll fix logically impossible sampled speeds. For example speeds that are too high.
+
 
 def checkInRangeAndFit(start, end, currentLocation):
     # check x/y axis
