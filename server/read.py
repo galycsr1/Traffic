@@ -25,13 +25,13 @@ import Parser
 
 def read_meta_file():
     file = open("C:\\Users\\Avner\\PycharmProjects\\traffic data\\examples\\big_28.12.2017-04_55_56.meta", 'r')
-    return Parser.fix_file(file.read())
+    info_file = open("C:\\Users\\Avner\\PycharmProjects\\traffic data\\examples\\big_28.12.2017-04_55_56.json", 'r')
+    return Parser.fix_file(file.read(), "C:\\Users\\Avner\\PycharmProjects\\traffic data\\examples\\big_28.12.2017-04_55_56.json")
 
 
 
 
-
-
+#read_meta_file()
 
 
 
