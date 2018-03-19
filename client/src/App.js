@@ -24,7 +24,8 @@ class App extends Component {
       playbackRate: 1.0,      
       currentFrame: null,
       numOfFrames: 0,
-      seeking: false
+      seeking: false,
+      loading: false
     }
   }
 
@@ -85,38 +86,31 @@ class App extends Component {
     });
   }
 
-  readFramesFile = (i, event) => {
-    const input = event.target;
-    const file = input.files[0];
-    var reader = new FileReader();
+  loadFiles = (json, meta, i) => {
+    this.setState({
+      loading: true
+    });
     let self = this;
-    reader.onload = function(){
-      const text = reader.result;
-      axios.post('http://localhost:8080/', {
-        route: 'getFrames',
-        input: text
-      })
-      .then(function (response) {        
-        try {
-          let _frames = self.state.frames;
-          _frames[i] = self.parseFrames(response.data, i);
-          self.setState({
-            frames: _frames,
-            currentFrame: 0,
-            numOfFrames: _frames[i].length
-          });
-        }
-        catch(e) {
-          console.log(e);
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    };
-    if(typeof file === 'object') {
-      reader.readAsText(file);  
-    }    
+    axios.post('http://localhost:8080/', {
+      route: 'getFrames',
+      json: json,
+      meta: meta
+    })
+    .then(function (response) {        
+      try {
+        let _frames = self.state.frames;
+        _frames[i] = self.parseFrames(response.data, i);
+        self.setState({
+          frames: _frames,
+          currentFrame: 0,
+          numOfFrames: _frames[i].length,
+          loading: false
+        });
+      }
+      catch(e) {
+        console.log(e);
+      }
+    });
   }
 
   parseFrames = (json, direction) => {
@@ -158,7 +152,8 @@ class App extends Component {
                   playing={this.state.playing}
                   played ={this.state.played}
                   playbackRate={this.state.playbackRate} 
-                  setPlaybackRate={this.setPlaybackRate.bind(this)}>
+                  setPlaybackRate={this.setPlaybackRate.bind(this)}
+                  loading={this.state.loading}>
               </Map>
             </Col>
             <Col xs={6}>
@@ -166,7 +161,7 @@ class App extends Component {
               <Col xs={12}>
                 <Videos ref="videos"
                         readVideoFile={this.readVideoFile.bind(this)} 
-                        readFramesFile={this.readFramesFile.bind(this)} 
+                        loadFiles={this.loadFiles.bind(this)} 
                         onProgress={this.onProgress.bind(this)}
                         onEnded={this.onEnded.bind(this)}
                         playing={this.state.playing}

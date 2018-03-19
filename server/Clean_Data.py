@@ -37,31 +37,31 @@ def clean_routs_jsons(hash_vehicles, jsons):
 
 
 def clean(data):
-    jsons = data.replace("'", '"').replace("False", "false").replace("True", "true").split("\n")
-    ans = []
-    hash_vehicles = {}
+	jsons = data.replace("'", '"').replace("False", "false").replace("True", "true").split("\n")
+	ans = []
+	hash_vehicles = {}
     # Extract path for each vehicle by collecting location per frame from the current JSON file
-    for frame in jsons:
-        try:
-            json_frame = json.loads(frame)
-        except ValueError:  # includes simplejson.decoder.JSONDecodeError
-            pass
-        objects = json_frame['objects']
-        # Extract location of each vehicle in the current frame
-        for i in range(0, len(objects)):
-            vehicle = objects[i]
-            vehicle_id = int(vehicle['tracking_id'])
-            coordinates = [[], []]
-            if not hash_vehicles.__contains__(vehicle_id):
-                hash_vehicles[vehicle_id] = list()
-            coordinates[0] = vehicle['bounding_box'][0]
-            coordinates[1] = vehicle['bounding_box'][1]
-            hash_vehicles[vehicle_id].append(coordinates)
+	for frame in jsons:
+		try:
+			json_frame = json.loads(frame)
+		except ValueError:  # includes simplejson.decoder.JSONDecodeError
+			pass
+		objects = json_frame['objects']
+		# Extract location of each vehicle in the current frame
+		for i in range(0, len(objects)):
+			vehicle = objects[i]
+			vehicle_id = int(vehicle['tracking_id'])
+			coordinates = [[], []]
+			if not hash_vehicles.__contains__(vehicle_id):
+				hash_vehicles[vehicle_id] = list()
+			coordinates[0] = vehicle['bounding_box'][0]
+			coordinates[1] = vehicle['bounding_box'][1]
+			hash_vehicles[vehicle_id].append(coordinates)
 
-    #hash_vehicles = clean_routs(hash_vehicles)
-    normalizeData(hash_vehicles)
-    updateJson(jsons, hash_vehicles)
-    return jsons
+	#hash_vehicles = clean_routs(hash_vehicles)
+	normalizeData(hash_vehicles)
+	updateJson(jsons, hash_vehicles)
+	return jsons
 
 def updateJson(jsonFile, vehiclesPath):
     # Pass through all the frames in order to update them

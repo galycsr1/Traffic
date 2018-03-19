@@ -8,7 +8,8 @@ class Videos extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        videos: [{},{},{},{}].map(function(obj, index) { return { showFilesModal: false, ref: 'video' + index }; })
+        videos: [{},{},{},{}].map(function(obj, index) { return { showFilesModal: false, ref: 'video' + index }; }),
+        temp_files: [{},{},{},{}].map(function(obj) { return { json: null, meta: null }; })
     };
   }
 
@@ -25,6 +26,65 @@ class Videos extends Component {
     this.refs.video2.seekTo(index);
     this.refs.video3.seekTo(index);
   }
+
+
+  // metadata of the video
+  readJsonFile = (i, event) => {
+    const input = event.target;
+    const file = input.files[0];
+    var reader = new FileReader();
+    let self = this;
+    reader.onload = function() {
+      const text = reader.result;
+      let temp_files = self.state.temp_files;
+      temp_files[i].json = text;
+      self.setState({
+        temp_files: temp_files
+      });
+    };
+    if(typeof file === 'object') {
+      reader.readAsText(file);  
+    }
+  }
+
+  // the frames in the video
+  readMetaFile = (i, event) => {
+    const input = event.target;
+    const file = input.files[0];
+    var reader = new FileReader();
+    let self = this;
+    reader.onload = function() {
+      const text = reader.result;
+      let temp_files = self.state.temp_files;
+      temp_files[i].meta = text;
+      self.setState({
+        temp_files: temp_files
+      });
+    };
+    if(typeof file === 'object') {
+      reader.readAsText(file);  
+    }
+  }
+
+  finishLoadingFiles = (i) => {
+    let json = this.state.temp_files[i].json;
+    let meta = this.state.temp_files[i].meta;
+    if(json == null || meta == null) {
+
+    } else {      
+      this.props.loadFiles(json, meta, i);
+
+      let temp_files = this.state.temp_files;
+      temp_files[i] = { json: null, meta: null };
+      this.setState({
+        temp_files: temp_files
+      });
+
+      this.toggleFileModal(i);
+    }
+  }
+
+
 
   render() {
     let self = this;
@@ -68,17 +128,22 @@ class Videos extends Component {
         <Modal isOpen={self.state.videos[index].showFilesModal} className="FilesModal" key={'modal'+index} keyboard={true}>
           <ModalHeader toggle={(e) => self.toggleFileModal(index)}>Select Files</ModalHeader>
           <ModalBody>
-            <FormGroup className="inputRow">
-                  <Label>Frames JSON #{index+1}</Label>
-                  <Input type="file" accept="*.meta" onChange={(event)=> { self.props.readFramesFile(index, event) }} />
+              <FormGroup className="inputRow">
+                  <Label>Frames (.meta) #{index+1}</Label>
+                  <Input type="file" accept="*.meta" onChange={(event)=> { self.readMetaFile(index, event) }} />
               </FormGroup>
               <FormGroup className="inputRow">
-                  <Label>Video file #{index+1}</Label>
+                  <Label>Metadata (.json) #{index+1}</Label>
+                  <Input type="file" accept="*.json" onChange={(event)=> { self.readJsonFile(index, event) }} />
+              </FormGroup>
+              <FormGroup className="inputRow">
+                  <Label>Video #{index+1}</Label>
                   <Input type="file" accept="video/*" onChange={(event)=> { self.props.readVideoFile(index, event) }} />
               </FormGroup>
           </ModalBody>
           <ModalFooter>
-              <Button color="primary" onClick={(e) => self.toggleFileModal(index)}>Done</Button>
+              <Button color="danger" onClick={(e) => self.toggleFileModal(index)}>Cancel</Button>
+              <Button color="primary" onClick={(e) => self.finishLoadingFiles(index)}>Done</Button>
           </ModalFooter>      
         </Modal>
       );

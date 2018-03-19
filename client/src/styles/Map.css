@@ -26,3 +26,13 @@
     position: absolute;
     z-index: 0;
 }
+
+.Loading {
+    background-size: 50px;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 10px;
+    left: 24px;
+    background-color: rgba(0,0,0,0.1);
+}

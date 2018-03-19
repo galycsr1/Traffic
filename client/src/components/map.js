@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Vehicle from './vehicle.js';
 import '../styles/Map.css';
+import loading_gif from '../images/loading.gif';
 
 const MAP_HEIGHT = 500;
 const MAP_WIDTH = 500;
@@ -33,7 +34,7 @@ class Map extends Component {
                   case DIRECTIONS.TOP_TO_DOWN:
                     y = MAP_HEIGHT - y;
                     if(y > MAP_HEIGHT / 2) {
-                      return null;
+                      //return null;
                     }
                     break;
                   case DIRECTIONS.RIGHT_TO_LEFT:
@@ -41,12 +42,12 @@ class Map extends Component {
                     y = x - y;
                     x = x - y;
                     if(x < MAP_HEIGHT / 2) {
-                      return null;
+                      //return null;
                     }
                     break;
                   case DIRECTIONS.DOWN_TO_UP:
                     if(y < MAP_HEIGHT / 2) {
-                      return null;
+                      //return null;
                     }
                     break;
                   case DIRECTIONS.LEFT_TO_RIGHT:
@@ -55,7 +56,7 @@ class Map extends Component {
                     x = x - y;
                     x = MAP_HEIGHT - x;
                     if(x > MAP_HEIGHT / 2) {
-                      return null;
+                      //return null;
                     }
                     break;
                   default:
@@ -106,26 +107,40 @@ class Map extends Component {
       width: MAP_HEIGHT / 2,
       height: LANE_WIDTH
     };
+    let loading = '';
+    let loadingStyle = {      
+      backgroundImage: `url(${loading_gif})`,
+      height: MAP_HEIGHT + 'px',
+      width: MAP_WIDTH + 'px'
+    };
+    if(this.props.loading) {
+      loading = (
+        <div className="Loading" style={loadingStyle}></div>
+      );
+    }
     return (
-      <div className="Map" style={mapStyle}>
-        <div>
-          {vehicles[DIRECTIONS.TOP_TO_DOWN]}
+      <div>
+        <div className="Map" style={mapStyle}>
+          <div>
+            {vehicles[DIRECTIONS.TOP_TO_DOWN]}
+          </div>
+          <div>
+            {vehicles[DIRECTIONS.RIGHT_TO_LEFT]}
+          </div>
+          <div>
+            {vehicles[DIRECTIONS.DOWN_TO_UP]}
+          </div>
+          <div>
+            {vehicles[DIRECTIONS.LEFT_TO_RIGHT]}
+          </div>
+          <div className="lanes">
+            <div id="lane0" style={lane0Style}></div>
+            <div id="lane1" style={lane1Style}></div>
+            <div id="lane2" style={lane2Style}></div>
+            <div id="lane3" style={lane3Style}></div>
+          </div>
         </div>
-        <div>
-          {vehicles[DIRECTIONS.RIGHT_TO_LEFT]}
-        </div>
-        <div>
-          {vehicles[DIRECTIONS.DOWN_TO_UP]}
-        </div>
-        <div>
-          {vehicles[DIRECTIONS.LEFT_TO_RIGHT]}
-        </div>
-        <div className="lanes">
-          <div id="lane0" style={lane0Style}></div>
-          <div id="lane1" style={lane1Style}></div>
-          <div id="lane2" style={lane2Style}></div>
-          <div id="lane3" style={lane3Style}></div>
-        </div>
+        {loading}
       </div>
     );
   }

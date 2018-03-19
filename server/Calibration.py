@@ -7,6 +7,7 @@ def get_incline(p1, p2):
 
 
 def is_lane(lane, point):
+    lane = lane['points']
     min_x = lane[0]
     min_y = lane[0]
     max_x = lane[0]
@@ -45,7 +46,6 @@ def is_lane(lane, point):
 
 def get_lane(bb, info):
     lanes = [info[0], info[1], info[2]]
-    print(lanes)
     vehicle_box = [[bb[0], bb[1]], [bb[0] + bb[2], bb[1]], [bb[0], bb[1] + bb[3]], [bb[0] + bb[2], bb[1] + bb[3]]]
     points_on_lane = [0, 0, 0]
     for i in range(0, 3):
@@ -112,12 +112,13 @@ def fix_json(json_object):
     for i in range(0, len(json_object)):
         json_object[i] = fix_frame(0, json_object[i])
 
-
+'''
 print(get_lane([535, 306, 61, 55], [[[557, 160], [263, 422], [381, 445], [565, 163]], [[568, 166], [377, 447],
                                [478, 456], [589, 172]], [[591, 173], [477, 461], [626, 461], [608, 180], [599, 176]]]))
 
 print(get_lane([387, 212, 105, 130], [[[557, 160], [263, 422], [381, 445], [565, 163]], [[568, 166], [377, 447],
                                [478, 456], [589, 172]], [[591, 173], [477, 461], [626, 461], [608, 180], [599, 176]]]))
+'''
 # print(is_lane([[557, 160], [263, 422], [381, 445], [565, 163]], 387, 212))
 # print(is_lane([[557, 160], [263, 422], [381, 445], [565, 163]], 387, 212))
 # print(is_lane([[557, 160], [263, 422], [381, 445], [565, 163]], 387, 212))
