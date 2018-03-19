@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Container, Row, Col } from 'reactstrap';
 import axios from 'axios';
 import logo from './images/logo.svg';
 import Videos from './components/videos.js';
@@ -7,6 +8,9 @@ import Controls from './components/controls.js';
 import './styles/App.css';
 
 const FRAME_TIME = 0.066666666666;
+const SECOND = 1000;
+const MAP_HEIGHT = 500;
+const MAP_WIDTH = 500;
 
 class App extends Component {
   constructor(props) {
@@ -26,7 +30,7 @@ class App extends Component {
 
   playPause = () => {
     if(this.state.currentFrame == null || this.state.urls.filter(url => url != null).length === 0) {
-      return;
+      return false;
     }
     if(!this.state.playing) {
       var timeout = FRAME_TIME * this.state.playbackRate;
@@ -37,12 +41,13 @@ class App extends Component {
             currentFrame: self.state.currentFrame + 1
           });
           timeout = FRAME_TIME / self.state.playbackRate;
-          setTimeout(playFrame, timeout * 1000);
+          setTimeout(playFrame, timeout * SECOND);
         }
       }
       setTimeout(playFrame, timeout);
     }
     this.setState({ playing: !this.state.playing });
+    return false;
   }
   onEnded = () => {
     this.setState({ 
@@ -50,15 +55,12 @@ class App extends Component {
       currentFrame: 0
     });    
   }
-  setPlaybackRate = e => {
-    let rate = parseFloat(e.target.value);
+  setPlaybackRate = rate => {
     this.setState({ playbackRate: rate });
   }
   onSeekMouseDown = e => {
-    //this.setState({ seeking: true });
   }
-  onSeekChange = e => {
-    let seekTo = parseFloat(e.target.value);
+  onSeekChange = seekTo => {
     this.setState({ 
       played: seekTo,
       currentFrame: Math.floor(this.state.numOfFrames * seekTo)
@@ -66,14 +68,9 @@ class App extends Component {
     this.refs.videos.seekTo(seekTo);
   }
   onSeekMouseUp = e => {
-    //let seekTo = parseFloat(e.target.value);
-    //this.setState({ seeking: false });
-    //this.refs.videos.seekTo(seekTo);
   }
   onProgress = state => {
-    console.log(state);
     if (!this.state.seeking) {
-      console.log(state);
       this.setState(state);
     }
   }
@@ -95,19 +92,14 @@ class App extends Component {
     let self = this;
     reader.onload = function(){
       const text = reader.result;
-      /*self.setState({
-        frames: JSON.parse(text),
-        currentFrame: 0
-      });*/
       axios.post('http://localhost:8080/', {
         route: 'getFrames',
         input: text
       })
-      .then(function (response) {
-        //console.log(response);
+      .then(function (response) {        
         try {
           let _frames = self.state.frames;
-          _frames[i] = self.parseFrames(response.data, (i + 1) * 270);
+          _frames[i] = self.parseFrames(response.data, i);
           self.setState({
             frames: _frames,
             currentFrame: 0,
@@ -122,7 +114,9 @@ class App extends Component {
         console.log(error);
       });
     };
-    reader.readAsText(file);
+    if(typeof file === 'object') {
+      reader.readAsText(file);  
+    }    
   }
 
   parseFrames = (json, direction) => {
@@ -132,8 +126,8 @@ class App extends Component {
       let cars = [];
       frame.map(function(car) {
         cars.push({
-          y: Math.floor(car.bounding_box[0] / 2),
-          x: 500 - Math.floor(car.bounding_box[1] / 2),
+          y: Math.floor((car.bounding_box[0] - car.bounding_box[2] / 2) / 2),
+          x: MAP_WIDTH - Math.floor((car.bounding_box[1] - car.bounding_box[3] / 2) / 2),
           type: car.type,
           direction: direction,
           tracking_id: car.tracking_id,
@@ -155,37 +149,50 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">NoTraffic</h1>
         </header>
-        <div>
-        <Controls ref="controls"
-                    readVideoFile={this.readVideoFile.bind(this)} 
-                    readFramesFile={this.readFramesFile.bind(this)} 
-                    playing={this.state.playing}
-                    played={this.state.played} 
-                    playPause={this.playPause.bind(this)}
-                    playbackRate={this.state.playbackRate} 
-                    setPlaybackRate={this.setPlaybackRate.bind(this)} 
-                    onSeekMouseDown={this.onSeekMouseDown.bind(this)}
-                    onSeekChange={this.onSeekChange.bind(this)}
-                    onSeekMouseUp={this.onSeekMouseUp.bind(this)}>
-          </Controls>
-          <Map ref="map"
-               frames={this.state.frames}
-               currentFrame={this.state.currentFrame}
-               playing={this.state.playing}
-               played ={this.state.played}
-               playbackRate={this.state.playbackRate} 
-               setPlaybackRate={this.setPlaybackRate.bind(this)}>
-          </Map>
-          <Videos ref="videos"
-                  onProgress={this.onProgress.bind(this)}
-                  onEnded={this.onEnded.bind(this)}
+        <Container>
+          <Row>
+            <Col xs={6}>
+              <Map ref="map"
+                  frames={this.state.frames}
+                  currentFrame={this.state.currentFrame}
                   playing={this.state.playing}
+                  played ={this.state.played}
                   playbackRate={this.state.playbackRate} 
-                  setPlaybackRate={this.setPlaybackRate.bind(this)} 
-                  urls={this.state.urls}>
-          </Videos>          
-          
-        </div>
+                  setPlaybackRate={this.setPlaybackRate.bind(this)}>
+              </Map>
+            </Col>
+            <Col xs={6}>
+            <Row>
+              <Col xs={12}>
+                <Videos ref="videos"
+                        readVideoFile={this.readVideoFile.bind(this)} 
+                        readFramesFile={this.readFramesFile.bind(this)} 
+                        onProgress={this.onProgress.bind(this)}
+                        onEnded={this.onEnded.bind(this)}
+                        playing={this.state.playing}
+                        playbackRate={this.state.playbackRate} 
+                        setPlaybackRate={this.setPlaybackRate.bind(this)} 
+                        urls={this.state.urls}>
+                </Videos> 
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={12}>
+                <Controls ref="controls"
+                        playing={this.state.playing}
+                        played={this.state.played} 
+                        playPause={this.playPause.bind(this)}
+                        playbackRate={this.state.playbackRate} 
+                        setPlaybackRate={this.setPlaybackRate.bind(this)} 
+                        onSeekMouseDown={this.onSeekMouseDown.bind(this)}
+                        onSeekChange={this.onSeekChange.bind(this)}
+                        onSeekMouseUp={this.onSeekMouseUp.bind(this)}>
+                </Controls>
+              </Col>
+            </Row>
+            </Col>
+          </Row>          
+        </Container>
       </div>
     );
   }

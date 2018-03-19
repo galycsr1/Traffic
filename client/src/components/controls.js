@@ -1,96 +1,53 @@
 import React, { Component } from 'react';
-import { Input, Label, Form, FormGroup, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Container, Row, Col } from 'reactstrap';
+import { PlayButton, PauseButton, ProgressBar } from 'react-player-controls';
 import '../styles/Controls.css';
+import '../styles/video_controls.css';
 
 class Controls extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            showFileModal: false
-        };
-    }
-    toggleFileModal = (event) => {
-        this.setState({
-            showFileModal: !this.state.showFileModal
-        });
-    }
+
     render() {
-        console.log(this.props.played);
+        //console.log(this.props.played);
+
+        let playPause = <PlayButton isEnabled={true} onClick={this.props.playPause} />
+        if(this.props.playing) {
+            playPause = <PauseButton type="button" onClick={this.props.playPause} />
+        }
+
         return (
-          <div className="Controls">
-            <Form>
-                <FormGroup>
-                    <Button color="danger" onClick={this.toggleFileModal}>Select files</Button> {' '}
-                    <Button color="info" onClick={this.props.playPause}>{this.props.playing ? 'Pause' : 'Play'}</Button>
-                </FormGroup>
-                <FormGroup>
-                    <Label>Seek</Label>
-                    <input
-                        type='range' min={0} max={1} step='any'
-                        value={this.props.played}
-                        onMouseDown={this.props.onSeekMouseDown}
-                        onChange={this.props.onSeekChange}
-                        onMouseUp={this.props.onSeekMouseUp}
-                        />
-                </FormGroup>
-                <FormGroup>
-                    <Label>Speed</Label>
-                    <input
-                        type='range' min={0.1} max={10} step="0.1" 
-                        value={this.props.playbackRate} 
-                        onChange={this.props.setPlaybackRate} 
-                        />
-                        <span> x{this.props.playbackRate}</span>
-                </FormGroup>
-                <FormGroup>
-                    <Label>Progress</Label>
-                    <progress max={1} value={this.props.played} />
-                </FormGroup>
-            </Form>
-
-            <Modal isOpen={this.state.showFileModal} className="FilesModal">
-                <ModalHeader toggle={this.toggleFileModal}>Select Files</ModalHeader>
-                <ModalBody>
-                    <Form>
-                        <FormGroup className="inputRow">
-                            <Label>Frames JSON #1</Label>
-                            <Input type="file" accept="*.meta" onChange={(event)=> { this.props.readFramesFile(0, event) }} />
-                        </FormGroup>
-                        <FormGroup className="inputRow">
-                            <Label>Video file #1</Label>
-                            <Input type="file" accept="video/*" onChange={(event)=> { this.props.readVideoFile(0, event) }} />
-                        </FormGroup>
-                        <FormGroup className="inputRow">
-                            <Label>Frames JSON #2</Label>
-                            <Input type="file" accept="*.meta" onChange={(event)=> { this.props.readFramesFile(1, event) }} />
-                        </FormGroup>
-                        <FormGroup className="inputRow">
-                            <Label>Video file #2</Label>
-                            <Input type="file" accept="video/*" onChange={(event)=> { this.props.readVideoFile(1, event) }} />
-                        </FormGroup>
-                        <FormGroup className="inputRow">
-                            <Label>Frames JSON #3</Label>
-                            <Input type="file" accept="*.meta" onChange={(event)=> { this.props.readFramesFile(2, event) }} />
-                        </FormGroup>
-                        <FormGroup className="inputRow">
-                            <Label>Video file #3</Label>
-                            <Input type="file" accept="video/*" onChange={(event)=> { this.props.readVideoFile(2, event) }} />
-                        </FormGroup>
-                        <FormGroup className="inputRow">
-                            <Label>Frames JSON #4</Label>
-                            <Input type="file" accept="*.meta" onChange={(event)=> { this.props.readFramesFile(3, event) }} />
-                        </FormGroup>
-                        <FormGroup className="inputRow">
-                            <Label>Video file #4</Label>
-                            <Input type="file" accept="video/*" onChange={(event)=> { this.props.readVideoFile(3, event) }} />
-                        </FormGroup>
-                    </Form>
-                </ModalBody>
-                <ModalFooter>
-                    <Button color="primary" onClick={this.toggleFileModal}>Done</Button>
-                </ModalFooter>      
-            </Modal>
-
+          <div className="Controls player">
+            <Container>
+                    <Row>
+                        <Col xs={2}>
+                            {playPause}
+                        </Col>
+                        <Col xs={6}>
+                            <ProgressBar
+                                totalTime={1}
+                                currentTime={this.props.played}
+                                isSeekable={true}
+                                onSeek={this.props.onSeekChange}
+                                onSeekStart={this.props.onSeekMouseDown}
+                                onSeekEnd={this.props.onSeekMouseUp}
+                            />
+                        </Col>
+                        <Col xs={4}>
+                            <Row>
+                                <Col xs={8}>
+                                    <ProgressBar
+                                        totalTime={10}
+                                        currentTime={this.props.playbackRate}
+                                        isSeekable={true}
+                                        onSeek={this.props.setPlaybackRate}
+                                    />
+                                </Col>
+                                <Col xs={4}>
+                                    <p className="speed"> x{(''+this.props.playbackRate).substring(0, Math.min(4, (''+this.props.playbackRate).length))}</p>
+                                </Col>
+                            </Row>
+                        </Col>
+                    </Row>
+                </Container>
           </div>
         );
       }
