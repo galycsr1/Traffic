@@ -1,5 +1,5 @@
 import json
-
+import math
 
 def get_array(param):
     ans = [[], []]
@@ -48,7 +48,7 @@ def clean(data):
         except ValueError:  # includes simplejson.decoder.JSONDecodeError
             pass
         objects = json_frame['objects']
-        # Extract location of each vehicle in the current frame
+        # Extract location and speed of each vehicle in the current frame
         for i in range(0, len(objects)):
             vehicle = objects[i]
             vehicle_id = int(vehicle['tracking_id'])
@@ -64,10 +64,10 @@ def clean(data):
 
     #hash_vehicles = clean_routs(hash_vehicles)
     normalizeData(hash_vehicles, vehiclesSpeed)
-    updateJson(jsons, hash_vehicles)
+    updateJson(jsons, hash_vehicles, vehiclesSpeed)
     return jsons
 
-def updateJson(jsonFile, vehiclesPath):
+def updateJson(jsonFile, vehiclesPath, vehiclesSpeed):
     # Pass through all the frames in order to update them
     for frame in jsonFile:
         try:
@@ -75,14 +75,17 @@ def updateJson(jsonFile, vehiclesPath):
         except ValueError:  # includes simplejson.decoder.JSONDecodeError
             pass
         objects = jsonFrame['objects']
-        # Update location of each vehicle in the current frame
+        # Update location and speed of each vehicle in the current frame
         for i in range(0, len(objects)):
             vehicle = objects[i]
             vehicle_id = int(vehicle['tracking_id'])
             currentVehiclePath = vehiclesPath[vehicle_id]
+            currentVehicleSpeeds = vehiclesSpeed[vehicle_id]
             modifiedLocation = currentVehiclePath.pop(0)
+            modifiedSpeed = currentVehicleSpeeds.pop(0)
             vehicle['bounding_box'][0] = modifiedLocation[0]
             vehicle['bounding_box'][1] = modifiedLocation[1]
+            vehicle['speed'] = modifiedSpeed
 
 def normalizeData(vehiclesPath, vehiclesSpeed):
     # Fix and handle locations of vehicles from given data
@@ -104,9 +107,53 @@ def normalizeData(vehiclesPath, vehiclesSpeed):
         #   in high number and end in lower number, the numbers should be going down all the way or vice versa.
         linearMovement(start_location, vehiclesPath[path])
 
-    # Third Stage:
-    #   We'll fix logically impossible sampled speeds. For example speeds that are too high.
+    # Fix and handle speeds of vehicles from given data
+    for vehicle in vehiclesSpeed:
+        # Third Stage:
+        #   We'll fix logically impossible high sampled speeds.
+        index = 0
+        for speed in vehiclesSpeed[vehicle]:
+            normalizedSpeed = checkForLegalSpeedAndFit(speed)
+            vehiclesSpeed[vehicle][index] = normalizedSpeed
+            index += 1
 
+        # Fourth Stage:
+        #   We'll check(and fix) that the difference in speed between two consecutive frames is logical
+        checkForLegalDifferSpeed(vehiclesSpeed[vehicle])
+
+
+def checkForLegalDifferSpeed(vehicleSpeedList):
+    # Speeds in m/millisecond
+    minSpeed = 0.0
+    # 50 km/h -> 13.88888888888889 m/s -> 0.013888888888889 m/millisecond
+    maxSpeed = (50.0/3.6) / 1000
+    # Calculation is delta(velocity)/delta(time),
+    # where delta(velocity) = maxSpeed-minSpeed and
+    # delta(time) = 1/25 second = 40 milliseconds (according to 25 fps)
+    deltaVel = maxSpeed - minSpeed
+    deltaTime = 40
+    maxAccelration = deltaVel/deltaTime
+    index = 0
+    while index < len(vehicleSpeedList):
+        if vehicleSpeedList[index] < vehicleSpeedList[index+1]:
+            if vehicleSpeedList[index] + maxAccelration < vehicleSpeedList[index+1]:
+                # Anomaly in speed and we'll fix it
+                vehicleSpeedList[index+1] = vehicleSpeedList[index] + maxAccelration
+            # else speed is OK
+        else: # current speed is bigger than next speed
+            if vehicleSpeedList[index] - maxAccelration > vehicleSpeedList[index+1]:
+                vehicleSpeedList[index + 1] = vehicleSpeedList[index] - maxAccelration
+            # else speed is OK
+        index += 1
+
+def checkForLegalSpeedAndFit(currentSpeed):
+    # max speed is in km/h
+    maxSpeed = 50.0
+    # max legal speed is in m/s
+    maxLegalSpeedPerSec = maxSpeed/3.6
+    if currentSpeed > maxLegalSpeedPerSec:
+        currentSpeed = maxLegalSpeedPerSec
+    return currentSpeed
 
 def checkInRangeAndFit(start, end, currentLocation):
     # check x/y axis
